@@ -60,7 +60,8 @@ function RequestHoliday({ user, onBack }) {
     if (!startDate || !endDate) return 0
     const start = new Date(startDate)
     const end = new Date(getActualEndDate())
-    return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1
+    // End date is return to work, so don't add 1
+    return Math.ceil((end - start) / (1000 * 60 * 60 * 24))
   }
 
   const getPeopleOffOnDate = (dateStr) => {
@@ -221,7 +222,7 @@ function RequestHoliday({ user, onBack }) {
               <input type="date" value={startDate} onChange={(e) => { setStartDate(e.target.value); if (!endDate || e.target.value > endDate) setEndDate(e.target.value) }} min={getMinDate()} className="w-full px-3 py-2 border rounded-lg" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">End (Return to Work)</label>
               <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate || getMinDate()} className="w-full px-3 py-2 border rounded-lg" />
             </div>
           </div>
