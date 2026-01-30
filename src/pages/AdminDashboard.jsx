@@ -64,18 +64,24 @@ function AdminDashboard({ user, onLogout, onNavigate }) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2"><Calendar isAdmin={true} /></div>
+          <div className="lg:col-span-2 h-fit"><Calendar isAdmin={true} /></div>
 
-          {/* FIXED: Removed Off Today section - now only Quick Actions */}
-          <div className="space-y-6">
-            {pendingRequests.length > 0 && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                <h3 className="font-semibold text-yellow-800 mb-3">{pendingRequests.length} Pending Request{pendingRequests.length !== 1 ? 's' : ''}</h3>
-                <button onClick={() => onNavigate('pending-requests')} className="w-full bg-yellow-600 text-white py-2 rounded-lg hover:bg-yellow-700">Review Now</button>
-              </div>
-            )}
+          {/* Right column - always show pending box */}
+          <div className="flex flex-col gap-6">
+            {/* Always show pending box */}
+            <div className={`rounded-xl p-4 ${pendingRequests.length > 0 ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50 border border-gray-200'}`}>
+              <h3 className={`font-semibold mb-3 ${pendingRequests.length > 0 ? 'text-yellow-800' : 'text-gray-600'}`}>
+                {pendingRequests.length} Pending Request{pendingRequests.length !== 1 ? 's' : ''}
+              </h3>
+              <button 
+                onClick={() => onNavigate('pending-requests')} 
+                className={`w-full py-2 rounded-lg ${pendingRequests.length > 0 ? 'bg-yellow-600 text-white hover:bg-yellow-700' : 'bg-gray-300 text-gray-600'}`}
+              >
+                {pendingRequests.length > 0 ? 'Review Now' : 'No Pending'}
+              </button>
+            </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-4">
+            <div className="bg-white rounded-xl shadow-sm p-4 flex-1">
               <h3 className="font-semibold text-gray-800 mb-4">Quick Actions</h3>
               <div className="grid grid-cols-2 gap-3">
                 <button onClick={() => onNavigate('pending-requests')} className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2"><Clock size={20} className="text-gray-600" /><span className="text-sm text-gray-700">Pending</span></button>
