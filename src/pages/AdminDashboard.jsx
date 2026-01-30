@@ -40,8 +40,20 @@ function AdminDashboard({ user, onLogout, onNavigate }) {
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center gap-3"><div className="p-3 bg-yellow-100 rounded-lg"><Clock className="text-yellow-600" size={24} /></div><div><p className="text-sm text-gray-500">Pending</p><p className="text-2xl font-bold text-gray-800">{pendingRequests.length}</p></div></div>
           </div>
+          {/* FIXED: Off Today now shows teacher names */}
           <div className="bg-white rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3"><div className="p-3 bg-orange-100 rounded-lg"><AlertTriangle className="text-orange-600" size={24} /></div><div><p className="text-sm text-gray-500">Off Today</p><p className="text-2xl font-bold text-gray-800">{offToday.length}</p></div></div>
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-orange-100 rounded-lg"><AlertTriangle className="text-orange-600" size={24} /></div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-gray-500">Off Today</p>
+                <p className="text-2xl font-bold text-gray-800">{offToday.length}</p>
+                {offToday.length > 0 && (
+                  <p className="text-xs text-gray-500 truncate mt-1">
+                    {offToday.map(r => r.userName.split(' ')[0]).join(', ')}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="flex items-center gap-3"><div className="p-3 bg-blue-100 rounded-lg"><Users className="text-blue-600" size={24} /></div><div><p className="text-sm text-gray-500">Active Staff</p><p className="text-2xl font-bold text-gray-800">{activeStaff.length}</p></div></div>
@@ -54,6 +66,7 @@ function AdminDashboard({ user, onLogout, onNavigate }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2"><Calendar isAdmin={true} /></div>
 
+          {/* FIXED: Removed Off Today section - now only Quick Actions */}
           <div className="space-y-6">
             {pendingRequests.length > 0 && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
@@ -74,20 +87,6 @@ function AdminDashboard({ user, onLogout, onNavigate }) {
                 <button onClick={() => onNavigate('reports')} className="p-4 border rounded-lg hover:bg-gray-50 flex flex-col items-center gap-2 col-span-2"><FileText size={20} className="text-gray-600" /><span className="text-sm text-gray-700">Reports</span></button>
               </div>
             </div>
-
-            {offToday.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm p-4">
-                <h3 className="font-semibold text-gray-800 mb-3">Off Today</h3>
-                <div className="space-y-2">
-                  {offToday.map(r => (
-                    <div key={r._id} className="flex justify-between items-center py-2 border-b last:border-0">
-                      <span className="text-gray-800">{r.userName}</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${r.type === 'HOLIDAY' ? 'bg-blue-100 text-blue-700' : r.type === 'SICK' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-700'}`}>{r.type}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </main>

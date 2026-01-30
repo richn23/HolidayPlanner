@@ -34,18 +34,26 @@ function RequestHoliday({ user, onBack }) {
   const daysUsed = api.calculateDaysUsed(leaveRequests, user._id)
   const daysRemaining = user.yearlyQuota - daysUsed
 
-  const getEndOfWeek = (dateStr) => {
-    const date = new Date(dateStr)
-    const day = date.getDay()
-    if (day === 0) return dateStr
-    const daysUntilSunday = 7 - day
-    date.setDate(date.getDate() + daysUntilSunday)
-    return date.toISOString().split('T')[0]
-  }
-
+  // FIXED: Only extend to Sunday if end date is Friday
   const getActualEndDate = () => {
     if (!endDate) return null
-    return getEndOfWeek(endDate)
+    const date = new Date(endDate)
+    const day = date.getDay() // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+    
+    // Only extend if Friday (5)
+    if (day === 5) {
+      date.setDate(date.getDate() + 2) // Add 2 days to get to Sunday
+      return date.toISOString().split('T')[0]
+    }
+    
+    return endDate // Keep as-is for all other days
+  }
+
+  // Check if end date is Friday (for showing the note)
+  const endsOnFriday = () => {
+    if (!endDate) return false
+    const date = new Date(endDate)
+    return date.getDay() === 5
   }
 
   const calculateDays = () => {
@@ -217,7 +225,9 @@ function RequestHoliday({ user, onBack }) {
               <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={startDate || getMinDate()} className="w-full px-3 py-2 border rounded-lg" />
             </div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600"><strong>Note:</strong> Leave extends to Sunday.</div>
+          {endsOnFriday() && (
+            <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-600"><strong>Note:</strong> Leave extends to Sunday.</div>
+          )}
         </div>
 
         {startDate && endDate && (
